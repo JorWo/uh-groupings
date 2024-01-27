@@ -1,0 +1,36 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer tailwind {
+    @tailwind base;
+}
+
+@import url('@mantine/core/styles.css');
+
+@layer utilities {
+    .mantine-hidden-dark {
+        @mixin dark {
+            display: none;
+        }
+
+        @mixin light {
+            display: block;
+        }
+    }
+
+    .mantine-hidden-light {
+        @mixin light {
+            display: none;
+        } 
+
+        @mixin dark {
+            display: block;
+        }
+    }
+
+    .mantine-hover {
+        @mixin hover {
+            background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+        }
+    }
+}
