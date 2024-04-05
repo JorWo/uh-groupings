@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom';
 import { loadEnvConfig } from '@next/env';
 import { enableFetchMocks } from 'jest-fetch-mock';
+import { createMocks } from 'react-idle-timer';
 import User from '@/access/User';
 
 enableFetchMocks();
+createMocks();
 loadEnvConfig(process.cwd());
 
 Object.defineProperty(window, 'matchMedia', {
