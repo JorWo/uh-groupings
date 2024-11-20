@@ -8,11 +8,9 @@ import {
 } from '@/components/ui/pagination';
 import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-
 import { Table } from '@tanstack/table-core';
-import { GroupingPath } from '@/lib/types';
 
-const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
+const PaginationBar = <T,>({ table }: { table: Table<T> }) => {
     const [activePage, setActivePage] = useState(0);
     const pageRange = 2;
     const startPage = Math.max(0, activePage - pageRange);
@@ -21,7 +19,7 @@ const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
     return (
         <Pagination className="flex justify-end pt-3 pb-3 text-green-blue">
             <PaginationContent className="border rounded gap-0">
-                <PaginationItem key={'first'} className="px-2">
+                <PaginationItem key={'first'} className="px-2 hover:bg-light-grey">
                     <PaginationLink
                         onClick={() => {
                             if (table.getCanPreviousPage()) {
@@ -29,9 +27,7 @@ const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
                                 setActivePage(0);
                             }
                         }}
-                        className={`${
-                            !table.getCanPreviousPage() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                        } hover:bg-light-grey`}
+                        className={!table.getCanPreviousPage() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
                     >
                         <DoubleArrowLeftIcon className="mr-1" />
                         First
@@ -57,7 +53,7 @@ const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
                                 table.setPageIndex(i);
                                 setActivePage(i);
                             }}
-                            className={`rounded-none border-transparent ${
+                            className={`rounded-none border-transparent cursor-pointer ${
                                 i === activePage ? 'bg-light-green text-black cursor-default' : 'hover:bg-light-grey'
                             }`}
                         >
@@ -76,7 +72,7 @@ const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
                         className={`${!table.getCanNextPage() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     />
                 </PaginationItem>
-                <PaginationItem key={'last'} className="px-2 border-l">
+                <PaginationItem key={'last'} className="px-2 border-l hover:bg-light-grey">
                     <PaginationLink
                         onClick={() => {
                             if (table.getCanNextPage()) {
@@ -84,9 +80,11 @@ const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
                                 setActivePage(table.getPageCount() - 1);
                             }
                         }}
-                        className={`${
-                            !table.getCanNextPage() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                        } hover:bg-light-grey`}
+                        className={
+                            !table.getCanNextPage() || table.getRowCount() === Infinity
+                                ? 'cursor-not-allowed opacity-50'
+                                : 'cursor-pointer'
+                        }
                     >
                         <span className="pr-1">Last</span>
                         <DoubleArrowRightIcon />

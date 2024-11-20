@@ -1,4 +1,4 @@
-import { getRequest, postRequestRetry } from './http-client';
+import { getRequest } from './http-client';
 import {
     Announcements,
     GroupingDescription,
@@ -7,7 +7,7 @@ import {
     GroupingGroupMembers,
     GroupingPaths,
     MembershipResults,
-    GroupingGroupsMembers
+    GroupingMembers
 } from './types';
 import { getUser } from '@/lib/access/user';
 
@@ -21,35 +21,6 @@ const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 export const getAnnouncements = (): Promise<Announcements> => {
     const endpoint = `${baseUrl}/announcements`;
     return getRequest<Announcements>(endpoint);
-};
-
-/**
- * Get all the members of an owned grouping through paginated calls.
- *
- * @param groupPaths - The paths to the groups
- * @param page - The page number
- * @param size - The size of the page
- * @param sortString - String to sort by column name
- * @param isAscending - On true the data returns in ascending order
- *
- * @returns The promise of members of an owned grouping
- */
-export const ownedGrouping = async (
-    groupPaths: string[],
-    page: number,
-    size: number,
-    sortString: string,
-    isAscending: boolean
-): Promise<GroupingGroupsMembers> => {
-    const currentUser = await getUser();
-    const params = new URLSearchParams({
-        page: page.toString(),
-        size: size.toString(),
-        sortString,
-        isAscending: isAscending.toString()
-    });
-    const endpoint = `${baseUrl}/groupings/group?${params.toString()}`;
-    return postRequestRetry<GroupingGroupsMembers>(endpoint, currentUser.uid, groupPaths);
 };
 
 /**
@@ -206,4 +177,29 @@ export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): P
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`;
     return getRequest<boolean>(endpoint, currentUser.uid);
+};
+
+export const searchGroupingMembers = async (groupingPath: string, search: string): Promise<GroupingGroupMembers> => {
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/search/${search}`;
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
+};
+
+export const getGroupingMembers = async (
+    groupingPath: string,
+    page?: string,
+    size?: string,
+    sortString?: string,
+    isAscending?: string
+): Promise<GroupingMembers> => {
+    const currentUser = await getUser();
+    const params = new URLSearchParams();
+
+    if (page) params.append('page', page);
+    if (size) params.append('size', size);
+    if (sortString) params.append('sortString', sortString);
+    if (isAscending) params.append('isAscending', isAscending);
+
+    const endpoint = `${baseUrl}/groupings/${groupingPath}?${params.toString()}`;
+    return getRequest<GroupingMembers>(endpoint, currentUser.uid);
 };
