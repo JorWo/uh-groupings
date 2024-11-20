@@ -1,4 +1,4 @@
-import { getRequest, postRequestRetry } from './http-client';
+import { getRequest, postRequest, postRequestRetry } from './http-client';
 import {
     Announcements,
     GroupingDescription,
@@ -36,20 +36,20 @@ export const getAnnouncements = (): Promise<Announcements> => {
  */
 export const ownedGrouping = async (
     groupPaths: string[],
-    page: number,
-    size: number,
+    page: string,
+    size: string,
     sortString: string,
-    isAscending: boolean
+    isAscending: string
 ): Promise<GroupingGroupsMembers> => {
     const currentUser = await getUser();
     const params = new URLSearchParams({
-        page: page.toString(),
-        size: size.toString(),
+        page,
+        size,
         sortString,
-        isAscending: isAscending.toString()
+        isAscending
     });
     const endpoint = `${baseUrl}/groupings/group?${params.toString()}`;
-    return postRequestRetry<GroupingGroupsMembers>(endpoint, currentUser.uid, groupPaths);
+    return postRequest<GroupingGroupsMembers>(endpoint, currentUser.uid, groupPaths);
 };
 
 /**
@@ -206,4 +206,10 @@ export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): P
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`;
     return getRequest<boolean>(endpoint, currentUser.uid);
+};
+
+export const searchGroupingMembers = async (groupingPath: string, search: string): Promise<GroupingGroupMembers> => {
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/search/${search}`;
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
 };

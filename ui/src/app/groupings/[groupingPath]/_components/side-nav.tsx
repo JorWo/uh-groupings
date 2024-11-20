@@ -23,9 +23,9 @@ const SideNav = ({ groupingPath }: { groupingPath: string }) => {
         { href: 'basis', icon: faIdCard, label: 'List only Basis members' },
         { href: 'include', icon: faUserPlus, label: 'Manage the Include members list' },
         { href: 'exclude', icon: faUserMinus, label: 'Manage the Exclude members list' },
-        { href: 'owners', icon: faCrown, label: 'Manage this grouping\'s owners' },
-        { href: 'sync-destinations', icon: faShareAlt, label: 'Manage this grouping\'s sync destinations' },
-        { href: 'preferences', icon: faCog, label: 'Manage this grouping\'s preferences' },
+        { href: 'owners', icon: faCrown, label: "Manage this grouping's owners" },
+        { href: 'sync-destinations', icon: faShareAlt, label: "Manage this grouping's sync destinations" },
+        { href: 'preferences', icon: faCog, label: "Manage this grouping's preferences" },
         { href: 'actions', icon: faTools, label: 'Tools to perform actions on this grouping\n' }
     ];
 
@@ -41,7 +41,7 @@ const SideNav = ({ groupingPath }: { groupingPath: string }) => {
                                 <Tooltip>
                                     <TooltipTrigger>
                                         <Link
-                                            href={`/groupings/${decodeURIComponent(groupingPath)}/${href}`}
+                                            href={`/groupings/${decodeURIComponent(groupingPath)}/${href}?page=1&sortBy=name&isAscending=true`}
                                             className={`flex items-center justify-center w-11 h-11 rounded-full border-none ${isSelected ? 'bg-white' : 'bg-transparent'}`}
                                         >
                                             <FontAwesomeIcon
